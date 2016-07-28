@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Line Chart</title>
+
+</head>
+<body>
+<script src="http://d3js.org/d3.v3.js"></script>
+<script>
+var data = [
+  {country:"USA", gold:10, silver:20},
+  {country:"China", gold:20, silver:100},
+  {country:"India", gold:200, silver:50},
+  {country:"Russia", gold:25, silver:80},
+  {country:"Germany", gold:10, silver:200},
+  {country:"UK", gold:150, silver:75},
+  {country:"France", gold:10, silver:70},
+  {country:"UAE", gold:30, silver:150},
+  {country:"Canada", gold:100, silver:15}
+]
+
+var margin = {top: 20, right: 100, bottom: 30, left: 100},
+    width = 700 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+var xScale = d3.scale.linear()
+    .domain([0, 200])
+    .range([0, width]);
+
+var yScale = d3.scale.linear()
+    .domain([0, 200])
+    .range([height, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale(xScale)
+    .orient("bottom")
+    
+    .ticks(5);
+
+var yAxis = d3.svg.axis()
+    .scale(yScale)
+    .orient("left")
+    
+    .ticks(5);
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    svg.selectAll("circle")
+   .data(data).enter()
+   .append("circle")
+   .attr("cx", function(d) {return xScale(d.gold)})
+   .attr("cy", function(d) {return yScale(d.silver)})
+   .attr("r", function(d) {
+     return Math.sqrt(d.gold*d.gold+d.silver*d.silver)/20
+   })
+   .attr("fill", function(d) {
+     return "rgb("+d.gold+","+d.silver+",0)"
+   })
+
+  svg.selectAll("text")
+    .data(data).enter()
+    .append("text")
+    .attr("x", function(d) {return xScale(d.gold+4)})
+    .attr("y", function(d) {return yScale(d.silver+4)})
+    .text(function(d) {return d.country})
+    .attr("font-size", "10px")
+
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+
+
+
+</script>
+</body>
+</html>
